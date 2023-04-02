@@ -5,38 +5,50 @@ import {useState, useEffect} from 'react';
 import Form from './components/Form';
 import Table from './components/Table';
 import { post } from 'jquery';
+import DataTable from 'react-data-table-component';
 
 
 function App() {
   const TASKS_ENDPOINT = 'https://6406aea577c1a905a0e079b5.mockapi.io/V1/tasklist';
 
-  const [task, setTask] = useState({
-    task: '',
-    date: '',
-  })
+  const [task, setTask] = useState('')
+    // task: '',
+    // date: '',
 
-  const [newTask, setNewTask] = useState({
-    task: '',
-    date: '',
-  })
+  const [newTask, setNewTask] = useState([])
+    // task: '',
+    // date: '',
 
   const [updatedTask, setUpdatedTask] = useState('')
 
-  function handleTask(x) {
-    setNewTask({
-      ...newTask,
-      task: x,
-    })
-  }
+  const handleChange = (e) => {
+    setTask(e.target.value)
+ }  
 
-const getTask = () => {
-    console.log('get function')
+const handleEvent = () => {
+    setTask([])
+    setNewTask([...newTask, task])
+}
+
+function handleDelete(id) {
+  const taskCopy = [...newTask]
+  taskCopy.splice(id, 1);
+  setNewTask(taskCopy)
+};
 
     useEffect(() => {
         fetch(TASKS_ENDPOINT)
           .then((data) => data.json())
-          .then((data) => getTask(data))
+          .then((data) => handleEvent(data))
     }, [])
+
+const getTask = () => {
+  console.log('get function')
+
+  fetch(TASKS_ENDPOINT)
+  .then((data) => data.json())
+  .then((data) => setTask())
+}
 
 const postTask = (e) => {
   e.preventDefault()
@@ -46,26 +58,25 @@ const postTask = (e) => {
     method: 'POST', 
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(newTask),
-  }).then(() => postTask())
+  }).then(() => getTask())
 
-  setNewTask({
-    task: '',
-    date: ''
-  })
+  // setNewTask({
+  //   task: '',
+  //   date: ''
+  // })
 }
 
   return (
     <div className="App">
       <Form 
       newTask={newTask}
-      getTask={getTask}
+      handleEvent={handleEvent}
       postTask={postTask}
-      handleTask={handleTask}
       />
       <Table />
     </div>
   );
 }
-}
+
 
 export default App;

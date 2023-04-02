@@ -1,8 +1,10 @@
 import React from 'react';
+import {useState, useEffect} from 'react';;
 
 export default function Form ({
-    handleTask,
-    getTask,
+    handleEvent,
+    handleChange,
+    setNewTask,
     postTask,
 }) {
     return (
@@ -10,10 +12,10 @@ export default function Form ({
             <h2>New Task</h2>
             <label>Task</label>
             <input
-            value={newTask.task}
-            onChange={(e) => handleTask(e.target.value)}
+            
+            onChange={(e) => (e.target.value)}
             />  
-            <button onClick={handleTask}>Add Task</button>    
+            <button onClick={handleChange}>Add Task</button>    
             </form>
             
     )
